@@ -1,0 +1,90 @@
+ ----------------------------------------------------
+-- Company : Rochester Institute of Technology (RIT )
+-- Engineer : Aden Crimmins (abc8255@rit.edu)
+--
+-- Create Date : 3-8-21
+-- Design Name : Instr_Decode
+-- Module Name : Instr_Decode - behavioral
+-- Project Name : Lab3_part_2
+-- Target Devices : Basys3
+--
+-- Description : Register File unit
+-- ----------------------------------------------------
+library IEEE ;
+use IEEE . STD_LOGIC_1164 .ALL ;
+use IEEE . NUMERIC_STD .ALL;
+entity Control_Unit is
+PORT (
+    Opcode, Funct : IN std_logic_vector(5 downto 0);
+	RegWrite ,MemtoReg, MemWrite, ALUSrc, RegDst : OUT std_logic;
+	ALUControl: OUT std_logic_vector(3 downto 0)
+) ;
+end Control_Unit ;
+
+architecture behavioral of Control_Unit is
+begin
+   
+   
+   process (Opcode, Funct) is begin
+    if Opcode = "000000" then
+        RegWrite <= '1';
+        MemtoReg <= '0';
+        MemWrite <= '0';
+        ALUSrc <= '0';
+        RegDst <= '1';
+        if Funct = "100000" then -- ADD
+            ALUControl <= "0100";
+        elsif Funct = "100100" then -- AND
+            ALUControl <= "1010";
+        elsif Funct = "011001" then -- MULTU
+            ALUControl <= "0110";
+        elsif Funct = "100101" then -- OR
+            ALUControl <= "1000";
+        elsif Funct = "000000" then -- SLL
+            ALUControl <= "1100";
+        elsif Funct = "000011" then -- SRA
+            ALUControl <= "1110";
+        elsif Funct = "000010" then -- SRL
+            ALUControl <= "1100";
+        elsif Funct = "100010" then -- SUB
+            ALUControl <= "0101";
+        elsif Funct = "100110" then -- XOR
+            ALUControl <= "1011";
+        else 
+            ALUControl <= "0000";
+        end if;
+    elsif Opcode = "101011" then -- SW
+            ALUControl <= "0100";
+            RegDst <= '0';
+            RegWrite <= '0';
+            MemtoReg <= '0';
+            MemWrite <= '1';
+            ALUSrc <= '1';
+    elsif Opcode = "100011" then -- LW
+            ALUControl <= "0100";
+            RegWrite <= '1';
+            RegDst <= '0';
+            MemtoReg <= '1';
+            MemWrite <= '0';
+            ALUSrc <= '1';
+    else 
+        RegWrite <= '1';
+        MemtoReg <= '0';
+        MemWrite <= '0';
+        ALUSrc <= '1';
+        RegDst <= '0';
+        if Opcode = "001000" then -- ADDI
+            ALUControl <= "0100";
+        elsif Opcode = "001100" then -- ANDI
+            ALUControl <= "1010";
+        elsif Opcode = "001101" then -- ORI
+            ALUControl <= "1000";
+        else  -- XORI
+            ALUControl <= "1011";
+        end if;
+   end if;
+    
+    
+   end process;
+
+end architecture behavioral;

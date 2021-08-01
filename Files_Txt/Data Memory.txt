@@ -1,0 +1,53 @@
+-- ----------------------------------------------------
+-- Company : Rochester Institute of Technology (RIT )
+-- Engineer : Aden Crimmins (abc8255@rit.edu)
+--
+-- Create Date : 4-3-21
+-- Design Name : data_memory
+-- Module Name : data_memory - behavioral
+-- Project Name : Lab5
+-- Target Devices : Basys3
+--
+-- Description : data memory unit
+-- ----------------------------------------------------
+library IEEE ;
+use IEEE . STD_LOGIC_1164 .ALL ;
+use IEEE . NUMERIC_STD .ALL;
+entity data_memory is
+GENERIC ( WIDTH : INTEGER := 32;
+          ADDR_SPACE: INTEGER := 5);
+PORT (
+    w_en : IN std_logic;
+    clk_n : IN std_logic;
+	Addr : IN std_logic_vector(ADDR_SPACE-1 downto 0);
+	d_in : IN std_logic_vector(WIDTH-1 downto 0);
+	d_out : OUT std_logic_vector(WIDTH-1 downto 0)
+) ;
+end data_memory ;
+
+architecture behavioral of data_memory is
+    type mem_array is array ((2**ADDR_SPACE)-1 downto 0) of std_logic_vector (WIDTH -1 downto 0) ;
+    signal mips_mem : mem_array := ( others => ( others => '0'));
+begin
+        
+    -- Writes the data when the enable is high on every clock
+    write_proc : process (clk_n) is
+        begin
+        if (rising_edge (clk_n)) then
+            if w_en = '1' then
+                if to_integer(unsigned(Addr)) /= 1022 then
+                    mips_mem(to_integer(unsigned(Addr))) <= d_in;
+                end if;
+            end if;
+        end if;
+    end process write_proc;
+    
+    -- determines the value of d_out based on the address provided
+    switch_proc : process (clk_n) is
+        begin
+        if (rising_edge (clk_n)) then
+                d_out <= mips_mem(to_integer(unsigned(Addr)));
+        end if;
+    end process switch_proc;
+
+end architecture behavioral;
