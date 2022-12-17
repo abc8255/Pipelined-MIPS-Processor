@@ -20,4 +20,5 @@ Created and assembled 5 different stages of a MIPS(Microprocessor without Interl
 ### Pipelined Processor
  - The final stage was to combine each of the components of the MIPS processor made in past stages, into one Pipelined MIPS processor. The outputs of each stage were designed to be captured into a register which passed each output on the same clock signal to make the design follow a pipelined operation. The Pipelined processor was first tested using a instruction set that ran each operation followed by an instruction set that created the first 10 values in the Fibonacci sequence. This exercise was successful in creating a full MIPS processor, designing and running test benches, and reinforcing VHDL practices.
 
-
+## Author
+Aden Crimmins, abc8255@rit.edu
