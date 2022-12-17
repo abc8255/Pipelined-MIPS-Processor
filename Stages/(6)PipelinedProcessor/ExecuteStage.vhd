@@ -1,0 +1,75 @@
+----------------------------------------------------------------------------------
+-- Company: Student(RIT)
+-- Engineer: Aden Crimmins
+-- 
+-- Create Date: 03/18/2021 08:01:03 AM
+-- Design Name: MIPS Excecution
+-- Module Name: ExecuteStage - Behavioral
+-- Project Name: Excecute Stage
+-- Target Devices: BASYS 3
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity ExecuteStage is
+    GENERIC ( N : INTEGER := 32) ; -- bit width
+    Port (  RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst : IN std_logic;
+            ALUControl : IN std_logic_vector ( 3 downto 0 );
+            RtDest, RdDest : IN std_logic_vector ( 4 downto 0 );
+            RegSrcA, RegSrcB, SignImm : IN std_logic_vector (N-1 downto 0 );
+            RegWriteOut, MemtoRegOut, MemWriteOut : OUT std_logic;
+            ALUResult, WriteData : OUT std_logic_vector ( N-1 downto 0 );
+            WriteReg : OUT std_logic_vector ( 4 downto 0 )
+    );
+end ExecuteStage;
+
+architecture Behavioral of ExecuteStage is
+    Component ALU is
+    GENERIC ( N : INTEGER := N) ; -- bit width
+        PORT (
+            signal in1, in2 : IN std_logic_vector ( N-1 downto 0 );
+            signal control : IN std_logic_vector ( 3 downto 0);
+            signal out1 : OUT std_logic_vector ( N-1 downto 0 ));
+    end Component ;
+     signal output: std_logic_vector(N-1 downto 0);
+     signal in2: std_logic_vector (N-1 downto 0);
+begin
+    ALU1: ALU PORT MAP(in1 => RegSrcA, in2 => in2, control => ALUControl, out1 => output); 
+    RegWriteOut <= RegWrite;
+    MemtoRegOut <= MemtoReg;
+    MemWriteOut <= MemWrite;
+    ALUResult <= output;
+    WriteData <= output;
+    process (ALUSrc, SignImm, RegSrcB) is begin
+        if ALUSrc = '1' then
+            in2 <= SignImm;
+        else
+            in2 <= RegSrcB;
+        end if;
+    end process;
+    process (RegDst, RtDest, RdDest) is begin
+        if RegDst = '1' then
+            WriteReg <= RdDest;
+        else
+            WriteReg <= RtDest;
+        end if;
+    end process;
+    
+        
+end Behavioral;

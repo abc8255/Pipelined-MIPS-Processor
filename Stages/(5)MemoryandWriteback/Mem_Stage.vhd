@@ -1,0 +1,59 @@
+-- ----------------------------------------------------
+-- Company : Rochester Institute of Technology (RIT )
+-- Engineer : Aden Crimmins (abc8255@rit.edu)
+--
+-- Create Date : 4-6-21
+-- Design Name : Memory_Stage
+-- Module Name : Memory_Stage - Structural
+-- Project Name : Lab5
+-- Target Devices : Basys3
+--
+-- Description : Memory Stage
+-- ----------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity Memory_Stage is
+GENERIC ( N : Integer := 32);
+Port (  MemWrite, RegWrite, MemtoReg, clk : IN std_logic; --
+        WriteReg : IN std_logic_vector (4 downto 0); --
+        ALUResult, WriteData : IN std_logic_vector (N-1 downto 0); --
+        RegWriteOut, MemtoRegOut : OUT std_logic; --
+        WriteRegOut : OUT std_logic_vector (4 downto 0); --
+        MemOut, ALUResultOut : OUT std_logic_vector (N-1 downto 0) --
+);
+end Memory_Stage;
+
+architecture Structural of Memory_Stage is    
+     component data_memory
+          Generic (   
+          WIDTH : INTEGER := 32;
+          ADDR_SPACE: INTEGER := 5
+          );
+          port (
+            w_en ,clk_n : IN std_logic; --
+            Addr : IN std_logic_vector(ADDR_SPACE-1 downto 0); --
+            d_in : IN std_logic_vector(WIDTH-1 downto 0); --
+            d_out : OUT std_logic_vector(WIDTH-1 downto 0) --
+      );
+    end component; 
+    signal Addr : std_logic_vector( 4 downto 0) := "00000";
+begin
+    -- instantiation of the Data Memory
+    datMem : data_memory port map (
+            w_en => MemWrite,
+            clk_n => clk, 
+            Addr => Addr,
+            d_in => WriteData,
+            d_out => MemOut
+    );
+    --Passthrough
+    ALUResultOut <= ALUResult;
+    RegWriteOut <= RegWrite;
+    MemtoRegOut <= MemtoReg;
+    WriteRegOut <= WriteReg;
+    
+end Structural;

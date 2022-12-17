@@ -1,0 +1,72 @@
+----------------------------------------------------------------------------------
+-- Company: RIT
+-- Engineer: Aden Crimmins
+-- 
+-- Create Date: 03/02/2021 08:16:58 PM
+-- Design Name: Instr_Fetch
+-- Module Name: Instr_Fetch - Behavioral
+-- Project Name: Lab 3
+-- Target Devices: Basys 3 FPGA
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.std_logic_unsigned.all;
+use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity Instr_Fetch is
+PORT (
+    clk, rst: IN std_logic;
+	Instruction : OUT std_logic_vector(31 downto 0)
+) ;
+end Instr_Fetch;
+
+
+architecture Behavioral of Instr_Fetch is
+
+    signal inputter : std_logic_vector(27 downto 0);
+    signal outputter : std_logic_vector(31 downto 0);    
+    
+component Instruction_mem
+  port (
+    Addr: IN std_logic_vector(27 downto 0);
+	d_out : OUT std_logic_vector(31 downto 0)
+  );
+end component;
+
+begin
+Instr_mem_1 : Instruction_mem
+    port map(Addr => inputter,
+             d_out => Instruction);
+      
+    process (clk, rst) is begin
+    if (rst = '0') then
+        if rising_edge(clk) then
+            inputter <= inputter +4;
+        end if;
+    else
+        inputter <= (others => '0');
+    end if;
+    end process;
+
+
+end Behavioral;
