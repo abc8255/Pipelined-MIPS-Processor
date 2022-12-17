@@ -1,4 +1,7 @@
 # Pipelined-MIPS-Processor
+![image](https://user-images.githubusercontent.com/70765141/208219959-2befdcdf-6781-4512-b7fc-64efe676fac3.png)
+
+## Description
 Created and assembled 5 different stages of a MIPS(Microprocessor without Interlocked Pipelined Stages) Processor into an functional pipelined microprocessor architecture. Outputs of each stage were captured in a register, which then fed them as the inputs for the following stage. Each register operated on a shared clock signal to maintain the pipelined operation.
 
 ## Stages of development
